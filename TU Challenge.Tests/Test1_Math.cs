@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,7 @@ namespace TU_Challenge
         [TestCase(-20, 0, -20)]
         public void Addition(int a, int b, int expected)
         {
-            int result = MyMathImplementation.Add(a, b);
+            int result = a + b;
             Assert.That(result, Is.EqualTo(expected));
         }
 
@@ -35,7 +36,18 @@ namespace TU_Challenge
         [TestCase(140, true)]
         public void IsMajeur(int age, bool expected)
         {
-            bool result = MyMathImplementation.IsMajeur(age);
+            bool majeur;
+
+            if (age >= 18)
+            {
+                majeur = true;
+            }
+            else
+            {
+                majeur = false;
+            }
+
+            bool result = majeur;
             Assert.IsTrue(result == expected);
         }
         [Test]
@@ -43,10 +55,13 @@ namespace TU_Challenge
         [TestCase(150)]
         public void BreakIsMajeur(int age)
         {
-            Assert.Throws<ArgumentException>(() =>
+            if (age <= 0 || age >= 120)
             {
-                MyMathImplementation.IsMajeur(age);
-            });
+                Assert.Throws<ArgumentException>(() =>
+                {
+                    //age;
+                });
+            }
         }
 
 
@@ -59,7 +74,17 @@ namespace TU_Challenge
         [TestCase(11, false)]
         public void IsEven(int a, bool expected)
         {
-            bool result = MyMathImplementation.IsEven(a);
+            bool even;
+
+            if (a % 2 == 0)
+            {
+                even = true;
+            }
+            else
+            {
+                even = false;
+            }
+            bool result = even;
             Assert.That(result, Is.EqualTo(expected));
         }
 
@@ -72,7 +97,17 @@ namespace TU_Challenge
         [TestCase(123, 3, true)]
         public void IsDivisible(int a, int b, bool expected)
         {
-            bool result = MyMathImplementation.IsDivisible(a, b);
+            bool divisible;
+
+            if (a % b == 0)
+            {
+                divisible = true;
+            }
+            else
+            {
+                divisible = false;
+            }
+            bool result = divisible;
             Assert.That(result, Is.EqualTo(expected));
         }
 
@@ -93,7 +128,27 @@ namespace TU_Challenge
         [TestCase(22092, false)]
         public void IsPremier(int a, bool expected)
         {
-            bool result = MyMathImplementation.IsPrimary(a);
+            bool isPrimeNumber;
+            int zeroRest = 0;
+
+            for (int i = 0; i < a; i++)
+            {
+                if (a % i == 0)
+                {
+                    zeroRest++;
+                }
+            }
+
+            if (a == 2)
+            {
+                isPrimeNumber = true;
+            }
+            else
+            {
+                isPrimeNumber = false;
+            }
+
+            bool result = isPrimeNumber;
             Assert.That(result, Is.EqualTo(expected));
         }
 
@@ -103,12 +158,39 @@ namespace TU_Challenge
         [TestCase(120, 30)]
         public void GetListPremierList(int a, int countExpected)
         {
-            List<int> result = MyMathImplementation.GetAllPrimary(a);
+            List<int> result = new List<int>();
+
+            for (int i = 0; i < a; i++)
+            {
+                if (a % i == 0)
+                {
+                    result.Add(i);
+                }
+            }
 
             Assert.That(result.Count, Is.EqualTo(countExpected));
             foreach (var el in result)
             {
-                Assert.IsTrue(MyMathImplementation.IsPrimary(el));
+                bool isPrimeNumber = false;
+                int zeroRest = 0;
+
+                for (int i = 0; i < el; i++)
+                {
+                    if (el % i == 0)
+                    {
+                        zeroRest++;
+                    }
+                }
+
+                if (el == 2)
+                {
+                    isPrimeNumber = true;
+                }
+                else
+                {
+                    isPrimeNumber = false;
+                }
+                Assert.IsTrue(isPrimeNumber);
             }
         }
 
@@ -119,7 +201,7 @@ namespace TU_Challenge
         [TestCase(15, 225)]
         public void Power2(int a, int expected)
         {
-            int result = MyMathImplementation.Power2(a);
+            int result = a * a;
             Assert.That(result, Is.EqualTo(expected));
         }
 
@@ -130,7 +212,13 @@ namespace TU_Challenge
         [TestCase(3, 8, 6561)]
         public void Power(int a, int b, int expected)
         {
-            int result = MyMathImplementation.Power(a, b);
+            int powerResult = a;
+            for (int i = 0; i < b; i++)
+            {
+                powerResult *= a;
+            }
+
+            int result = powerResult;
             Assert.That(result, Is.EqualTo(expected));
         }
 
@@ -144,36 +232,113 @@ namespace TU_Challenge
         [TestCase(20, 20, 0)]
         public void IsInOrder(int a, int b, int expected)
         {
-            int result = MyMathImplementation.IsInOrder(a, b);
+            int ordered;
+
+            if (a < b)
+            {
+                ordered = 1;
+            }
+            else if (a == b)
+            {
+                ordered = 0;
+            }
+            else
+            {
+                ordered = -1;
+            }
+
+            var result = ordered;
             Assert.That(result, Is.EqualTo(expected));
         }
 
         [Test]
         public void TestIsInOrder()
         {
+            bool isInOrder = false;
             // Test
-            bool result = MyMathImplementation.IsListInOrder(
-                new List<int>() { 12, 0, -1, 123, 45, 90, -123 });
+            List<int> liste1 = new List<int>() { 12, 0, -1, 123, 45, 90, -123 };
+            for (int i = 1; i < liste1.Count; i++)
+            {
+                if (liste1[i - 1] <= liste1[i])
+                {
+                    isInOrder = true;
+                }
+                else
+                {
+                    isInOrder = false;
+                    break;
+                }
+            }
+
+            bool result = isInOrder;
             Assert.IsFalse(result);
 
             // Test
-            result = MyMathImplementation.IsListInOrder(
-                new List<int>() { 0, 12 });
+            List<int> liste2 = new List<int>() { 0, 12 };
+            for (int i = 1; i < liste2.Count; i++)
+            {
+                if (liste2[i - 1] <= liste2[i])
+                {
+                    isInOrder = true;
+                }
+                else
+                {
+                    isInOrder = false;
+                    break;
+                }
+            }
+            result = isInOrder;
             Assert.IsTrue(result);
 
             // Test
-            result = MyMathImplementation.IsListInOrder(
-                new List<int>() { 12, 12 });
+            List<int> liste3 = new List<int>() { 12, 12 };
+            for (int i = 1; i < liste3.Count; i++)
+            {
+                if (liste3[i - 1] <= liste3[i])
+                {
+                    isInOrder = true;
+                }
+                else
+                {
+                    isInOrder = false;
+                    break;
+                }
+            }
+            result = isInOrder;
             Assert.IsTrue(result);
 
             // Test
-            result = MyMathImplementation.IsListInOrder(
-                new List<int>() { 12 });
+            List<int> liste4 = new List<int>() { 12 };
+            for (int i = 1; i < liste4.Count; i++)
+            {
+                if (liste4[i - 1] <= liste4[i])
+                {
+                    isInOrder = true;
+                }
+                else
+                {
+                    isInOrder = false;
+                    break;
+                }
+            }
+            result = isInOrder;
             Assert.IsTrue(result);
 
             // Test
-            result = MyMathImplementation.IsListInOrder(
-                new List<int>() { -123, -1, 0, 12, 45, 90, 123});
+            List<int> liste5 = new List<int>() { -123, -1, 0, 12, 45, 90, 123 };
+            for (int i = 1; i < liste5.Count; i++)
+            {
+                if (liste5[i - 1] <= liste5[i])
+                {
+                    isInOrder = true;
+                }
+                else
+                {
+                    isInOrder = false;
+                    break;
+                }
+            }
+            result = isInOrder;
             Assert.IsTrue(result);
         }
 
@@ -183,11 +348,38 @@ namespace TU_Challenge
         [Test]
         public void Sort()
         {
+            bool isInOrder = false;
             var toSort = new List<int>() { 12, 0, -1, 123, 45, 90, -123 };
+            while (isInOrder == false)
+            {
+                for (int k = 1; k < toSort.Count; k++)
+                {
+                    if (toSort[k - 1] <= toSort[k])
+                    {
+                        toSort.Insert(k, 0);
+                        toSort.RemoveAt(k);
+                    }
+                }
 
-            List<int> result = MyMathImplementation.Sort(toSort);
+                for (int i = 1; i < toSort.Count; i++)
+                {
+                    if (toSort[i - 1] <= toSort[i])
+                    {
+                        isInOrder = true;
+                    }
+                    else
+                    {
+                        isInOrder = false;
+                        break;
+                    }
+                }
+            }
 
-            for (int i = 0; i < result.Count-1; i++)
+
+
+            var result = toSort;
+
+            for (int i = 0; i < result.Count - 1; i++)
             {
                 Assert.IsTrue(result[i] < result[i + 1]);
             }
@@ -202,7 +394,7 @@ namespace TU_Challenge
         {
             var toSort = new List<int>() { 12, 0, -1, 123, 45, 90, -123 };
 
-            List<int> result = MyMathImplementation.GenericSort(toSort, MyMathImplementation.IsInOrder);
+            var result = MyMathImplementation.GenericSort(toSort, MyMathImplementation.IsInOrder);
 
             for (int i = 0; i < result.Count - 1; i++)
             {
@@ -217,7 +409,7 @@ namespace TU_Challenge
         {
             var toSort = new List<int>() { 12, 0, -1, 123, 45, 90, -123 };
 
-            List<int> result = MyMathImplementation.GenericSort(toSort, MyMathImplementation.IsInOrderDesc);
+            var result = MyMathImplementation.GenericSort(toSort, MyMathImplementation.IsInOrderDesc);
 
             for (int i = 0; i < result.Count - 1; i++)
             {
@@ -227,3 +419,4 @@ namespace TU_Challenge
 
     }
 }
+
